@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solicitud de Compra · ADQUISICIONES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+<div class="wrap narrow">
+  <header class="top">
+    <div>
+      <div class="eyebrow" id="eyebrow">Sub Departamento de Abastecimiento</div>
+      <h1>Solicitud de Compra</h1>
+      <div class="sub">Complete <b>todos</b> los campos y adjunte la documentación obligatoria. El envío se habilita solo cuando la solicitud está completa.</div>
+    </div>
+    <div class="row">
+      <a class="btn" href="/seguimiento">Consultar estado de una solicitud</a>
+    </div>
+  </header>
+
+  <form id="form" novalidate autocomplete="on">
+    <div id="secciones"></div>
+
+    <section class="card">
+      <h2><span class="num">4.</span> Detalle de bienes o servicios <span class="req">*</span></h2>
+      <div class="tbl-wrap">
+        <table class="tbl items">
+          <thead><tr><th style="width:36px">N°</th><th>Descripción</th><th style="width:120px">Unidad</th><th class="num" style="width:90px">Cantidad</th><th class="num" style="width:130px">P. unit. estimado ($)</th><th class="num" style="width:120px">Subtotal</th><th style="width:36px"></th></tr></thead>
+          <tbody id="items"></tbody>
+          <tfoot><tr><td colspan="5" class="num"><b>Total estimado</b></td><td class="num"><b id="total">$ 0</b></td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <div class="row" style="margin-top:10px"><button type="button" class="btn sm" id="addItem">+ Agregar ítem</button><span class="help">Montos estimados en pesos, IVA incluido.</span></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">5.</span> Documentación obligatoria</h2>
+      <p class="help" id="docHelp" style="margin-top:-6px"></p>
+      <div class="docs" id="docs"></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">6.</span> Declaración</h2>
+      <label class="decl"><input type="checkbox" id="declaracion"><span id="declTxt"></span></label>
+    </section>
+
+    <div class="submit-bar">
+      <div class="row">
+        <div class="progress" id="prog"><i style="width:0"></i></div>
+        <b id="progTxt" style="font-variant-numeric:tabular-nums">0%</b>
+        <button type="submit" class="btn primary" id="enviar" disabled>Enviar solicitud</button>
+      </div>
+      <div class="pend" id="pend"></div>
+      <div id="errores"></div>
+    </div>
+  </form>
+
+  <section class="card" id="exito" hidden>
+    <div class="eyebrow">Solicitud ingresada correctamente</div>
+    <div class="big-folio" id="exFolio"></div>
+    <p>Su solicitud fue recibida por Abastecimiento con toda la documentación consolidada en un solo PDF. Guarde este folio: con él y su correo puede ver en todo momento <b>quién es el comprador responsable</b> y en qué estado está.</p>
+    <div class="row">
+      <a class="btn primary" id="exSeg" href="/seguimiento">Ver seguimiento</a>
+      <a class="btn" id="exPdf" download>Descargar mi copia (PDF)</a>
+      <button class="btn" onclick="location.reload()">Ingresar otra solicitud</button>
+    </div>
+  </section>
+
+  <footer class="foot">ADQUISICIONES · <span id="inst">Hospital de Villarrica</span></footer>
+</div>
+
+<div class="overlay" id="overlay" hidden><div class="modal-box"><div class="spin"></div><b id="ovTxt">Procesando…</b><div class="help" style="margin-top:6px">No cierre esta ventana.</div><div id="ovRetry" style="margin-top:12px" hidden><button class="btn primary" id="btnRetry">Reintentar envío</button></div></div></div>
+
+<script src="/vendor/pdf-lib.min.js"></script>
+<script src="/js/pdf.js"></script>
+<script src="/js/formulario.js"></script>
+</body>
+</html>

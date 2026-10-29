@@ -1,0 +1,15 @@
+# OPCIONAL: solo si despliega con la línea de comandos (wrangler).
+# Si conecta el repositorio desde el panel de Cloudflare, NO renombre este archivo:
+# configure los enlaces (bindings) en el panel como indica el README.
+name = "adquisiciones"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "adquisiciones"
+database_id = "PEGAR_AQUI_EL_ID_DE_LA_BASE_D1"
+
+[[r2_buckets]]
+binding = "ARCHIVOS"
+bucket_name = "adquisiciones"

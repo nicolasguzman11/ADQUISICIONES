@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seguimiento · ADQUISICIONES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+<div class="wrap narrow">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Sub Departamento de Abastecimiento</div>
+      <h1>Seguimiento de solicitud</h1>
+      <div class="sub">Ingrese el folio y el correo con que envió la solicitud para ver el responsable y su estado.</div>
+    </div>
+    <a class="btn" href="/">Nueva solicitud</a>
+  </header>
+
+  <form class="card" id="f">
+    <div class="fields">
+      <div class="field"><label for="folio">Folio</label><input id="folio" placeholder="SC-2026-00001" required></div>
+      <div class="field"><label for="correo">Correo</label><input id="correo" type="email" required></div>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="btn primary">Consultar</button><span class="err" id="err"></span></div>
+  </form>
+
+  <div id="res"></div>
+  <footer class="foot">ADQUISICIONES · Hospital de Villarrica</footer>
+</div>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const f = (iso) => iso ? new Date(iso).toLocaleString("es-CL", { timeZone: "America/Santiago", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
+const fd = (ymd) => { const [y, m, d] = String(ymd || "").split("-"); return d ? `${d}-${m}-${y}` : "—"; };
+const chip = (e) => `<span class="chip ${["OC emitida","Cerrada"].includes(e) ? "good" : e === "Rechazada" ? "crit" : e === "Observada" ? "warn" : e === "Ingresada" ? "warn" : "info"}">${esc(e)}</span>`;
+async function consultar() {
+  $("#err").textContent = "";
+  const r = await fetch(`/api/seguimiento?folio=${encodeURIComponent($("#folio").value)}&correo=${encodeURIComponent($("#correo").value)}`);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { $("#err").textContent = j.error || "Error"; $("#res").innerHTML = ""; return; }
+  $("#res").innerHTML = `<section class="card">
+    <div class="row"><div class="big-folio">${esc(j.folio)}</div><span class="spacer"></span>${chip(j.estado)}</div>
+    <h2 style="margin-top:6px">${esc(j.titulo)}</h2>
+    <dl class="kv">
+      <dt>Comprador responsable</dt><dd>${j.comprador ? `<b>${esc(j.comprador)}</b>${j.comprador_correo ? ` · <a href="mailto:${esc(j.comprador_correo)}">${esc(j.comprador_correo)}</a>` : ""}` : '<span class="chip warn">Aún sin asignar</span>'}</dd>
+      <dt>Unidad</dt><dd>${esc(j.unidad)}</dd>
+      <dt>Ingreso</dt><dd>${f(j.creado)}</dd>
+      <dt>Asignación</dt><dd>${f(j.asignado)}</dd>
+      <dt>Fecha requerida</dt><dd>${fd(j.fecha_requerida)} · ${esc(j.prioridad)}</dd>
+      ${j.cerrado ? `<dt>Cierre</dt><dd>${f(j.cerrado)}</dd>` : ""}
+    </dl>
+  </section>
+  <section class="card"><h2>Historial</h2><ul class="timeline">${j.historial.map((h) => `<li><b>${esc(h.accion)}</b>${h.detalle ? ` — ${esc(h.detalle)}` : ""}<br><small>${f(h.fecha)}</small></li>`).join("")}</ul></section>`;
+}
+$("#f").addEventListener("submit", (e) => { e.preventDefault(); consultar(); });
+const q = new URLSearchParams(location.search);
+if (q.get("folio")) { $("#folio").value = q.get("folio"); $("#correo").value = q.get("correo") || ""; if (q.get("correo")) consultar(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bandeja de Compradores · ADQUISICIONES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Sub Departamento de Abastecimiento · Hospital de Villarrica</div>
+      <h1>Solicitudes de Compra</h1>
+      <div class="sub">Bandeja de compradores · sesión: <b id="yo">—</b> · actualizado <span id="upd">—</span></div>
+    </div>
+    <div class="row">
+      <button class="btn" id="btnRefresh">Actualizar</button>
+      <button class="btn" id="btnCsv">Exportar CSV</button>
+      <button class="btn" id="btnComp">Compradores</button>
+      <button class="theme-btn" id="btnTheme" title="Cambiar tema">◐</button>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="grid">
+    <section class="card"><h2>Carga por responsable (abiertas)</h2><div class="bars" id="chComp"></div><div class="legend" id="lgComp"></div></section>
+    <section class="card"><h2>Solicitudes por estado</h2><div class="bars" id="chEst"></div></section>
+  </div>
+
+  <section class="card">
+    <div class="filters">
+      <label>Buscar<input type="search" id="q" placeholder="Folio, título, unidad, solicitante…"></label>
+      <label>Estado<select id="fEst"><option value="">Todos</option><option value="__abiertas">Solo abiertas</option></select></label>
+      <label>Responsable<select id="fComp"><option value="">Todos</option><option value="__sin">Sin asignar</option></select></label>
+      <label>Prioridad<select id="fPri"><option value="">Todas</option><option>Normal</option><option>Urgente</option><option>Emergencia</option></select></label>
+      <label>Desde<input type="date" id="fDesde"></label>
+      <label>Hasta<input type="date" id="fHasta"></label>
+      <button class="btn sm" id="btnLimpiar">Limpiar</button>
+      <span class="spacer"></span><span class="muted" id="cnt"></span>
+    </div>
+    <div class="tbl-wrap" style="max-height:62vh">
+      <table class="tbl">
+        <thead><tr>
+          <th>Folio</th><th>Ingreso</th><th class="num">Días</th><th>Requerimiento</th><th>Solicitante</th><th>Prioridad</th>
+          <th class="num">Monto est.</th><th>Requerida</th><th>Estado</th><th>Responsable</th><th></th>
+        </tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+  </section>
+  <footer class="foot">ADQUISICIONES · Días = días corridos desde el ingreso hasta hoy o hasta el cierre.</footer>
+</div>
+
+<div class="drawer" id="drawer" hidden><div class="drawer-box" id="dBox"></div></div>
+
+<div class="modal" id="mComp" hidden><div class="modal-box">
+  <div class="row"><h2 style="margin:0">Compradores</h2><span class="spacer"></span><button class="btn sm" data-close>Cerrar</button></div>
+  <p class="help">Solo los compradores activos pueden ser asignados como responsables.</p>
+  <table class="tbl"><thead><tr><th>Nombre</th><th>Correo</th><th>Activo</th></tr></thead><tbody id="tbComp"></tbody></table>
+  <form id="fComp2" class="fields" style="margin-top:14px">
+    <div class="field"><label>Nombre</label><input id="cNom" required></div>
+    <div class="field"><label>Correo</label><input id="cMail" type="email"></div>
+    <div class="field full"><button class="btn primary">Agregar comprador</button></div>
+  </form>
+</div></div>
+
+<div class="toast" id="toast" hidden></div>
+<script src="/js/panel.js"></script>
+</body>
+</html>
